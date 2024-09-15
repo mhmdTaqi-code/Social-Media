@@ -38,7 +38,7 @@ function deletepostapi(){
       headers:header
   }).then(response=>{
       console.log(response)
-
+      location.reload()
       getpostuser()
       refrishprofile()
       loginLogOutalertmodel("you delete the post successfully")
