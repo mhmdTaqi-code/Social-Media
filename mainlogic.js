@@ -41,7 +41,7 @@ function deletepostapi(){
 
       getpostuser()
       refrishprofile()
-      loginLogOutalert("you delete the post successfully")
+      loginLogOutalertmodel("you delete the post successfully")
       const model = document.getElementById("deletePost");
 
       const modelinst = bootstrap.Modal.getInstance(model);
