@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- import bootstrap -->
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <script src="node_modules/axios/dist/axios.min.js"></script>
+  <!-- إضافة خطوط جديدة لتحسين العرض -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+
+<style>
+    body {
+      background-color: #f0f2f5;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /* Navbar Styling */
+    .navbar {
+      background-color: #ffffff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+      color: #4267B2;
+      font-weight: bold;
+    }
+
+    .navbar-toggler {
+      border: none;
+    }
+
+    .navbar-toggler-icon {
+      color: #4267B2;
+    }
+
+    .nav-item a {
+      color: #606770;
+    }
+
+    .nav-item a:hover {
+      color: #4267B2;
+    }
+
+    /* User Image in Navbar */
+    #logoutdiv img {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+    }
+
+    #username-nav {
+      font-weight: bold;
+      margin-left: 10px;
+      color: #000000;
+    }
+
+    /* Button Styling */
+    .btn-outline-success {
+      border-color: #4267B2;
+      color: #4267B2;
+    }
+
+    .btn-outline-success:hover {
+      background-color: #4267B2;
+      color: white;
+    }
+
+    /* Floating Post Button */
+    #addpost {
+      background-color: #4267B2;
+      position: fixed;
+      right: 2%;
+      bottom: 2%;
+      height: 60px;
+      width: 60px;
+      color: white;
+      font-size: 36px;
+      text-align: center;
+      line-height: 60px;
+      border-radius: 50%;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    /* Card Styling */
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      font-weight: bold;
+      font-size: 1.2em;
+      color: #1d2129;
+      background-color: transparent;
+      border-bottom: none;
+    }
+
+    .card-body img {
+      border-radius: 10px;
+    }
+
+    .card-body p {
+      font-size: 0.95em;
+      color: #606770;
+    }
+
+    /* Comment Section */
+    #comment {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+    }
+
+    #comment svg {
+      margin-right: 5px;
+      color: #606770;
+    }
+
+    #comment span {
+      color: #606770;
+    }
+
+    /* Media Queries for Responsiveness */
+    
+    #bodypost{
+      width: 29em;
+    }
+    @media (max-width: 767px) {
+
+  .container.col-6 {
+  
+    width: 100%;
+    max-width: 100%;
+  }
+
+      .navbar-brand {
+        font-size: 1.2em;
+      }
+
+
+      .card-body img {
+        width: 100%;
+        height: auto;
+      }
+
+      .modal-dialog {
+        max-width: 100%; 
+      }
+
+      #addpost {
+        height: 50px;
+        width: 50px;
+        font-size: 30px;
+        line-height: 50px;
+      }
+
+@media (max-width: 576px) {
+
+  .container.col-12.col-md-8 {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  #posts .col-12.col-md-9 {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%; 
+  }
+
+  #post .card {
+    margin-bottom: 15px; 
+    width: 100%; 
+  }
+
+  #post img {
+    height: auto; 
+    width: 100%; 
+  }
+
+  .card-header img {
+    height: 30px;
+    width: 30px;
+  }
+
+  .card-header {
+    font-size: 1rem;
+  }
+
+  .card-body h5 {
+    font-size: 1.25rem;
+  }
+
+  .card-body h6 {
+    font-size: 0.875rem;
+  }
+
+  .card-body p {
+    font-size: 0.9rem;
+  }}}
+
+   
+.lds-spinner,
+.lds-spinner div,
+.lds-spinner div:after {
+  box-sizing: border-box;
+}
+.lds-spinner {
+  color: currentColor;
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-spinner div {
+  transform-origin: 40px 40px;
+  animation: lds-spinner 1.2s linear infinite;
+}
+.lds-spinner div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 3.2px;
+  left: 36.8px;
+  width: 6.4px;
+  height: 17.6px;
+  border-radius: 20%;
+  background: currentColor;
+}
+.lds-spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+.lds-spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+.lds-spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+.lds-spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+.lds-spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+.lds-spinner div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+.lds-spinner div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+.lds-spinner div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+.lds-spinner div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+.lds-spinner div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+.lds-spinner div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+.lds-spinner div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+@keyframes lds-spinner {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+</style>
+
+<body>
+  <div id="alert"></div>
+  <div id="alertmodel"></div>
+  
+
+  <!-- زر إضافة منشور -->
+  <div id="addpost" onclick="creatpost()">+</div>
+
+  <!-- شاشة تحميل -->
+    <div id="lodding" style="position: fixed; left: 0; right: 0; top: 0; bottom: 0; justify-content: center; align-items: center; background-color: rgba(194, 194, 194, 0.905); z-index: 9999; margin: auto auto ; width: 100px; height: 100px; padding:10px 0 0 10px; border-radius: 20px;"  >
+    <div  class="lds-spinner">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    
+
+  </div>
+
+  <!-- المودالات -->
+ 
+  <div class="modal fade" id="deletePost" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" > are you sure to delete post?</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-footer">
+          <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">no</button>
+          <button type="button" id="submitDbtn" onclick="deletepostapi()" class="btn btn-primary">yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">login</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">email:</label>
+              <input type="text" class="form-control" id="username" value="mhmdtaqi">
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">password:</label>
+              <input type="password" class="form-control" id="password" value="12345666">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" onclick="login()" class="btn btn-primary">login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">create a new user</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">username:</label>
+              <input type="text" class="form-control" id="usernameregister">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">name:</label>
+              <input type="text" class="form-control" id="nameregister">
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">email:</label>
+              <input type="text" class="form-control" id="emailregister" >
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">password:</label>
+              <input type="password" class="form-control" id="passwordregister" >
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">img:</label>
+              <input type="file" class="form-control" id="img" value="">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" onclick="registerclicked()" class="btn btn-primary">register</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="postModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="post-modal-titile">create a new user</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">titile:</label>
+              <input type="text" class="form-control" id="titlepost">
+            </div>
+            <div class="mb-3">
+              <textarea name="" style="height: 5em; resize: none;" id="bodypost"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">img:</label>
+              <input type="file"  class="form-control" id="postimg" >
+            </div>
+            <input type="hidden" id="postid">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="submitbtn" onclick="postcreate()" class="btn btn-primary">create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- شريط التنقل -->
+  <div class="container-fluid"> <!-- تم تعديل هذا العنصر ليصبح بعرض الشاشة بالكامل -->
+    <div class="d-flex justify-content-center">
+      <nav class="navbar navbar-expand-lg bg-body-tertiary shadow rounded p-3 w-100"> <!-- تمت إضافة w-100 لتوسيع النافبار -->
+        <div class="container-fluid">
+          <a class="navbar-brand" href="./home.html">MhmdTaqi Website</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="./home.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="myprofileclicked()">Profile</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div id="logindiv" class="d-flex w-100 justify-content-end">
+          <button type="button" id="login" class="btn btn-outline-success mx-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Login</button>
+          <button type="button" id="Register" class="btn btn-outline-success mx-2" data-bs-toggle="modal" data-bs-target="#registerModal">Register</button>
+        </div>
+        <div id="logoutdiv"   class="d-none" >
+          <div style="display: flex;">
+
+          
+          <span style="display: flex;" onclick="myprofileclicked()">
+            <img class="rounded-circle" style="width: 40px; height: 40px;" id="userimg" src="#" alt="photo">
+            <b id="username-nav">@username</b>
+          </span>
+         
+          <button type="button" id="signout" onclick="logout()" class="btn btn-outline-danger mx-2 " style="width: 7em;">Log Out</button>
+        </div>
+      </div>
+      </nav>
+    </div>
+  </div>
+  
+
+  <!-- المحتوى الرئيسي -->
+  <div  class="container col-6">
+    <div id="posts">
+      <div class="d-flex justify-content-center">
+        <div class="col-9">
+          <!-- منشور واحد -->
+          <div id="post" class="p-3">
+            <div class="card">
+              <h5 class="card-header">
+                <img class="rounded-circle" style="height: 40px; width: 40px;" src="./profile pic/download.png" alt="profile photo">
+                <b>@username</b>
+              </h5>
+              <div class="card-body">
+                <img class="w-100" src="./post phto/pexels-pixabay-53435.jpg" alt="">
+                <h6 class="mt-2">2 min ago</h6>
+                <h5>Post Title</h5>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique, architecto?</p>
+                <hr>
+                <div id="comment">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left" viewBox="0 0 16 16">
+                    <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                  </svg>
+                  <span>(3) comments</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- نهاية المنشور -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- سكربتات العمل -->
+  <script src="./mainlogic.js"></script>
+  <script src="./homeScript.js"></script>
+</body>
+
+</html>
